@@ -11,3 +11,11 @@
 *.lai
 *.la
 *.a
+
+#vs ignore files
+*.bak
+*.opensdf
+*.sdf
+Debug/
+ipch/
+
