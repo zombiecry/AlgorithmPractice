@@ -18,4 +18,5 @@
 *.sdf
 Debug/
 ipch/
+Release/
 
