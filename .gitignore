@@ -16,6 +16,7 @@
 *.bak
 *.opensdf
 *.sdf
+*.suo
 Debug/
 ipch/
 Release/
