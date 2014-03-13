@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Section 3.1 Contact\contact.cpp">
+    <ClCompile Include="Section 3.1 Stamps\stamps.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
