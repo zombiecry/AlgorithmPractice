@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Section 3.2 Factorials\fact4.cpp" />
+    <ClCompile Include="Section 3.2 Stringsobits\Stringsobits.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1C0E39A1-ADCD-4301-93AE-CF314D6187F3}</ProjectGuid>
