@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Section 3.2 Stringsobits\Stringsobits.cpp">
+    <ClCompile Include="Section 3.2 Spinning Wheels\spin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
