@@ -11,12 +11,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Section 3.2 Spinning Wheels\spin.cpp" />
+    <ClCompile Include="TaroFriends.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{1C0E39A1-ADCD-4301-93AE-CF314D6187F3}</ProjectGuid>
+    <ProjectGuid>{18A6B773-7C3E-4EE0-B789-B0FA32829C1D}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>USACOTasks</RootNamespace>
+    <RootNamespace>TopCoderSRM</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
