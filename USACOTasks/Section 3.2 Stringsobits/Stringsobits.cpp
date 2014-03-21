@@ -73,6 +73,7 @@ int main (){
 		}
 		if (c[i][L]>=I){
 			FindOnes(i,L,I);
+			break;
 		}
 	}
 
