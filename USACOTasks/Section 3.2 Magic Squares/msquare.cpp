@@ -18,37 +18,36 @@ struct State{
 	std::vector <int> states;
 	string seqStr;
 	State ():states(8,0){}
+	bool operator ==(const State &s) const{
+		for (int i=0;i<states.size();i++){
+			if (states[i]!=s.states[i]){
+				return false;
+			}
+		}
+		return true;
+	}
 };
 typedef std::queue <State> StateQueue;
 
+
+
 StateQueue sQue;
+StateQueue invSQue;
 std::vector <string> ignoreVec;
-std::vector <int> goal(8);
+std::vector <string> invIgnoreVec;
+
 State startStat;
+State goalStat;
 
 
-bool GoalState(const State &s){
-	for (int i=0;i<goal.size();i++){
-		if (s.states[i]!=goal[i]){
-			return false;
-		}
-	}
-	return true;
-}
-
-
-bool StartState(const State &s){
-	for (int i=0;i<startStat.states.size();i++){
-		if (s.states[i]!=startStat.states[i]){
-			return false;
-		}
-	}
-	return true;
-}
 
 int trans[3][8]={{7,6,5,4,3,2,1,0},
 				 {3,0,1,2,5,6,7,4},
-				 {0,6,1,3,4,2,7,5}};
+				 {0,6,1,3,4,2,5,7}};
+int invTrans[3][8]={{7,6,5,4,3,2,1,0},
+			        {1,2,3,0,7,4,5,6},
+				    {0,2,5,3,4,6,1,7}};
+
 char sTrans[3]={'A','B','C'};
 void GenNode(State &newState,const State &oldState,int transType){
 	newState.seqStr=oldState.seqStr+sTrans[transType];
@@ -57,50 +56,110 @@ void GenNode(State &newState,const State &oldState,int transType){
 	}
 }
 
+void InvGenNode(State &newState,const State &oldState,int transType){
+	newState.seqStr=sTrans[transType]+oldState.seqStr;
+	for (int i=0;i<8;i++){
+		newState.states[i]=oldState.states[invTrans[transType][i]];
+	}
+}
 
+std::vector <State> levelState;
+std::vector <State> invLevelState;
+string transStr;
+int start1=0;
+int start2=0;
+bool findFlag;
+void FindSection(int s1,int len1,int s2,int len2){
+	for (int i=s1;i<len1;i++){
+		for (int j=s2;j<len2;j++){
+			if (levelState[i]==invLevelState[j]){
+				if (!findFlag){
+					findFlag=true;
+					transStr=levelState[i].seqStr+invLevelState[j].seqStr;
+				}
+				else{
+					transStr=std::min <string> (transStr,levelState[i].seqStr+invLevelState[j].seqStr);
+				}
+			}		
+		}
+	}
+
+}
+
+bool FindInLevel(){
+	findFlag=false;
+	int n1=levelState.size();
+	int n2=invLevelState.size();
+	FindSection(0,start1,start2,n2);
+	FindSection(start1,n1,0,n2);
+	start1=levelState.size();
+	start2=invLevelState.size();
+	return findFlag;
+}
 
 int main (){
 	for (int i=0;i<8;i++){
-		fin>>goal[i];
+		fin>>goalStat.states[i];
 		startStat.states[i]=i+1;
 	}
 	sQue.push(startStat);
-	while (!sQue.empty()){
-		const State &curState=sQue.front();
-		if (GoalState(curState)){
-			break;
-		}
-		else {
-			if (StartState(curState)&&curState.seqStr.length()){
-				ignoreVec.push_back(curState.seqStr);
-				sQue.pop();
+	invSQue.push(goalStat);
+	int curLevel=0;
+	while (!sQue.empty() && !invSQue.empty()){
+		State curState=sQue.front();
+		State curInvState=invSQue.front();
+		sQue.pop();
+		invSQue.pop();
+		if (curState.seqStr.length()>curLevel){
+			if (FindInLevel()){
+				break;
 			}
-			else{	//new state
-				bool ignoreFlag=false;
-				for (int i=0;i<ignoreVec.size();i++){
-					if (curState.seqStr.find(ignoreVec[i])!=string::npos){
-						ignoreFlag=true;
-						break;
-					}
-				}
-				if (!ignoreFlag){
-					State fatherState=curState;
-					sQue.pop();
-					for (int i=0;i<3;i++){
-						State newState;
-						GenNode(newState,fatherState,i);
-						sQue.push(newState);
-					}
-				}
-				else{
-					sQue.pop();
-				}
+			curLevel++;
+		}
+		bool expandFlag=true;
+		bool invExpandFlag=true;
+		
+		if (curLevel!=0 ){
+			if (curState==startStat){
+				ignoreVec.push_back(curState.seqStr);
+				expandFlag=false;
+			}
+			if (curInvState==goalStat){
+				invIgnoreVec.push_back(curInvState.seqStr);
+				invExpandFlag=false;
+			}
+		}
+		for (int i=0;i<ignoreVec.size();i++){
+			if (curState.seqStr.find(ignoreVec[i])!=string::npos){
+				expandFlag=false;
+				break;
+			}
+		}
+		for (int i=0;i<invIgnoreVec.size();i++){
+			if (curInvState.seqStr.find(invIgnoreVec[i])!=string::npos){
+				invExpandFlag=false;
+				break;
+			}
+		}
+		if (expandFlag){
+			levelState.push_back(curState);
+			for (int i=0;i<3;i++){
+				State newState;
+				GenNode(newState,curState,i);
+				sQue.push(newState);
+			}
+		}
+		if (invExpandFlag){
+			invLevelState.push_back(curInvState);
+			for (int i=0;i<3;i++){
+				State newState;
+				InvGenNode(newState,curInvState,i);
+				invSQue.push(newState);
 			}
 		}
 	}
 
-	fout<<sQue.front().seqStr.length()<<endl;
-	fout<<sQue.front().seqStr<<endl;
-
+	fout<<transStr.length()<<endl;
+	fout<<transStr<<endl;
 	return 0;
 }
