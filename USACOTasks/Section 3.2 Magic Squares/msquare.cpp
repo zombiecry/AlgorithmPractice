@@ -15,16 +15,11 @@ using namespace std;
 ifstream fin("msquare.in");
 ofstream fout("msquare.out");
 struct State{
-	std::vector <int> states;
+	unsigned int states;
 	string seqStr;
-	State ():states(8,0){}
+	State (){}
 	bool operator ==(const State &s) const{
-		for (int i=0;i<states.size();i++){
-			if (states[i]!=s.states[i]){
-				return false;
-			}
-		}
-		return true;
+		return states==s.states;
 	}
 };
 typedef std::queue <State> StateQueue;
@@ -33,13 +28,8 @@ typedef std::queue <State> StateQueue;
 
 StateQueue sQue;
 StateQueue invSQue;
-std::vector <string> ignoreVec;
-std::vector <string> invIgnoreVec;
-
 State startStat;
 State goalStat;
-
-
 
 int trans[3][8]={{7,6,5,4,3,2,1,0},
 				 {3,0,1,2,5,6,7,4},
@@ -49,22 +39,45 @@ int invTrans[3][8]={{7,6,5,4,3,2,1,0},
 				    {0,2,5,3,4,6,1,7}};
 
 char sTrans[3]={'A','B','C'};
-void GenNode(State &newState,const State &oldState,int transType){
-	newState.seqStr=oldState.seqStr+sTrans[transType];
-	for (int i=0;i<8;i++){
-		newState.states[i]=oldState.states[trans[transType][i]];
-	}
-}
 
-void InvGenNode(State &newState,const State &oldState,int transType){
-	newState.seqStr=sTrans[transType]+oldState.seqStr;
+
+void GenNode(State &newState,const State &oldState,int transMat[][8],int transType,bool invFlag=false){
+	if (invFlag){
+		newState.seqStr=sTrans[transType]+oldState.seqStr;
+	}
+	else{
+		newState.seqStr=oldState.seqStr+sTrans[transType];
+	}
+	newState.states=oldState.states;
 	for (int i=0;i<8;i++){
-		newState.states[i]=oldState.states[invTrans[transType][i]];
+		char *p1=(char *)&newState.states;
+		char *p2=(char *)&oldState.states;
+		char ch1,ch2;
+		if (transMat[transType][i]%2==0){
+			ch2=p2[transMat[transType][i]/2]&0xf0;
+			ch2=ch2>>4;
+		}
+		else{
+			ch2=p2[transMat[transType][i]/2]&0x0f;
+		}
+		ch2=ch2&0x0f;
+		if (i%2==0){
+			ch1=p1[i/2]&0x0f;
+			ch2=ch2<<4;
+		}
+		else{
+			ch1=p1[i/2]&0xf0;
+		}
+
+		p1[i/2]=ch1|ch2;
 	}
 }
 
 std::vector <State> levelState;
 std::vector <State> invLevelState;
+
+
+
 string transStr;
 int start1=0;
 int start2=0;
@@ -73,12 +86,15 @@ void FindSection(int s1,int len1,int s2,int len2){
 	for (int i=s1;i<len1;i++){
 		for (int j=s2;j<len2;j++){
 			if (levelState[i]==invLevelState[j]){
+				string str1=levelState[i].seqStr;
+				string str2=invLevelState[j].seqStr;
+				string curStr=str1+str2;
 				if (!findFlag){
 					findFlag=true;
-					transStr=levelState[i].seqStr+invLevelState[j].seqStr;
+					transStr=curStr;
 				}
 				else{
-					transStr=std::min <string> (transStr,levelState[i].seqStr+invLevelState[j].seqStr);
+					transStr=std::min <string> (transStr,curStr);
 				}
 			}		
 		}
@@ -97,68 +113,90 @@ bool FindInLevel(){
 	return findFlag;
 }
 
-int main (){
-	for (int i=0;i<8;i++){
-		fin>>goalStat.states[i];
-		startStat.states[i]=i+1;
+State curState;
+State curInvState;
+bool expandFlag=true;
+bool invExpandFlag=true;
+
+void Expan(){
+	if (!expandFlag){
+		return;
 	}
-	sQue.push(startStat);
-	invSQue.push(goalStat);
-	int curLevel=0;
-	while (!sQue.empty() && !invSQue.empty()){
-		State curState=sQue.front();
-		State curInvState=invSQue.front();
-		sQue.pop();
-		invSQue.pop();
-		if (curState.seqStr.length()>curLevel){
-			if (FindInLevel()){
-				break;
-			}
-			curLevel++;
+	for (int i=0;i<levelState.size();i++){
+		if (curState==levelState[i]){
+			expandFlag=false;
 		}
-		bool expandFlag=true;
-		bool invExpandFlag=true;
-		
-		if (curLevel!=0 ){
-			if (curState==startStat){
-				ignoreVec.push_back(curState.seqStr);
-				expandFlag=false;
-			}
-			if (curInvState==goalStat){
-				invIgnoreVec.push_back(curInvState.seqStr);
-				invExpandFlag=false;
-			}
-		}
-		for (int i=0;i<ignoreVec.size();i++){
-			if (curState.seqStr.find(ignoreVec[i])!=string::npos){
-				expandFlag=false;
-				break;
-			}
-		}
-		for (int i=0;i<invIgnoreVec.size();i++){
-			if (curInvState.seqStr.find(invIgnoreVec[i])!=string::npos){
-				invExpandFlag=false;
-				break;
-			}
-		}
-		if (expandFlag){
-			levelState.push_back(curState);
-			for (int i=0;i<3;i++){
-				State newState;
-				GenNode(newState,curState,i);
-				sQue.push(newState);
-			}
-		}
-		if (invExpandFlag){
-			invLevelState.push_back(curInvState);
-			for (int i=0;i<3;i++){
-				State newState;
-				InvGenNode(newState,curInvState,i);
-				invSQue.push(newState);
-			}
+	}
+	sQue.pop();
+	levelState.push_back(curState);
+	if (expandFlag){
+		for (int i=0;i<3;i++){
+			State newState;
+			GenNode(newState,curState,trans,i);
+			sQue.push(newState);
 		}
 	}
 
+}
+
+void InvExpan(){
+	if (!invExpandFlag){
+		return;
+	}
+	for (int i=0;i<invLevelState.size();i++){
+		if (curInvState==invLevelState[i]){
+			if (curInvState.seqStr>invLevelState[i].seqStr){
+				invExpandFlag=false;
+			}
+		}
+	}
+	invSQue.pop();
+	invLevelState.push_back(curInvState);
+	if (invExpandFlag){
+		for (int i=2;i>=0;i--){
+			State newState;
+			GenNode(newState,curInvState,invTrans,i,true);
+			invSQue.push(newState);
+		}
+	}
+}
+int main (){
+	startStat.states=0x78563412;
+	for (int i=0;i<4;i++){
+		short a,b;
+		fin>>a>>b;
+		a=a<<4;
+		a=a|b;
+		char *p=(char *)&goalStat.states;
+		p[i]=a;
+	}
+	sQue.push(startStat);	
+	invSQue.push(goalStat);
+	int curLevel=0;
+	while (!sQue.empty() && !invSQue.empty()){
+		curState=sQue.front();
+		curInvState=invSQue.front();
+		expandFlag=true;
+		invExpandFlag=true;
+		if (curState.seqStr.length()==curInvState.seqStr.length()){
+			if(curState.seqStr.length()>curLevel){
+				if (FindInLevel()){
+					break;
+				}
+				curLevel++;
+			}
+		}
+		else{
+			if (curState.seqStr.length()>curInvState.seqStr.length()){
+				expandFlag=false;
+			}
+			else{
+				invExpandFlag=false;
+			}
+		}
+		Expan();
+		InvExpan();
+	}
 	fout<<transStr.length()<<endl;
 	fout<<transStr<<endl;
 	return 0;
