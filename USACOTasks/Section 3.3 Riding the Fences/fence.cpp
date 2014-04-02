@@ -16,8 +16,7 @@ using namespace std;
 ifstream fin("fence.in");
 ofstream fout("fence.out");
 
-const int MAX_F=1024;
-const int MAX_INTER=501;
+const int MAX_INTER=500;
 int F;
 int e[MAX_INTER][MAX_INTER];
 
@@ -57,7 +56,6 @@ int main (){
 		int u=st.top();
 		int v=-1;
 		for (int i=0;i<n;i++){
-		//for (int i=n-1;i>=0;i--){
 			if (e[u][i]){
 				v=i;
 				break;
