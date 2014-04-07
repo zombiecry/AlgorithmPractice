@@ -7,6 +7,7 @@ LANG: C++
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <list>
 #include <queue>
 #include <stack>
 #include <map>
@@ -17,6 +18,10 @@ LANG: C++
 using namespace std;
 ifstream fin("fence4.in");
 ofstream fout("fence4.out");
+#define tr(container, it) \
+	for (typeof(containter.begin()) it = container.begin(); it != container.end();it++)
+
+
 int N;
 
 struct CVec2{
@@ -29,6 +34,21 @@ std::vector <CVec2> points;
 bool CheckIntersect(CVec2 p1,CVec2 p2,CVec2 p3,CVec2 p4){
 
 }
+
+bool Test(int cur){
+	typedef std::pair <CVec2,CVec2> scPairv2;
+	typedef std::list <scPairv2> scListTri;
+	scListTri triList;
+	scPairv2 tri(points[cur],points[cur+1]);
+	triList.push_back(tri);
+	for (int i=0;i<N;i++){
+		if (i!=cur){
+			int next=(i+1)%N;
+			
+		}
+	}
+}
+
 
 CVec2 obs;
 int main (){
@@ -49,34 +69,34 @@ int main (){
 				}
 			}
 		}
-	}
-
-	for (int i=0;i<N-1;i++){
-		CVec2 p1=points[i];
-		CVec2 p2=points[i+1];
-		int interNum[2]=0;
-		bool  canSeeFlag=true;
-		for (int j=0;j<N-1;j++){
-			if (j==i){
-				continue;
-			}
-			CVec2 p3=points[j];
-			CVec2 p4=points[j+1];
-			bool t1=CheckIntersect(obs,p1,p3,p4);
-			bool t2=CheckIntersect(obs,p2,p3,p4);
-			if (t1){
-				interNum[0]++;
-			}
-			if (t2){
-				interNum[1]++;
-			}
-			if (interNum[0] && interNum[1]){
-				canSeeFlag=false;
-				break;
+		if (i==N-1){
+			CVec2 p1=points[0];
+			CVec2 p2=points[i];
+			for (int j=0;j<N-1;j++){
+				CVec2 p3=points[j];
+				CVec2 p4=points[j+1];
+				if (CheckIntersect(p1,p2,p3,p4)){
+					fout<<"NOFENCE"<<endl;
+					return 0;
+				}
 			}
 		}
-		if (canSeeFlag){
-			fout<<p1.x<<" "<<p1.y<<" "<<p2.x<<" "<<p2.y<<endl;
+	}
+	std::vector <bool> canSee;
+	canSee.resize(N-1,false);
+	int count=0;
+	for (int i=0;i<N;i++){
+		if (Test(i)){
+			canSee[i]=true;
+			count++;
+		}
+	}
+
+	fout<<count<<endl;
+	for (int i=0;i<N;i++){
+		if (canSee[i]){
+			fout<<points[i].x<<" "<<points[i].y<<" "
+				<<points[i+1].x<<" "<<points[i+1].y<<endl;
 		}
 	}
 

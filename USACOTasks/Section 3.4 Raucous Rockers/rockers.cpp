@@ -68,7 +68,7 @@ int main (){
 		for (int j=0;j<N;j++){
 			c[i][j]=c[i-1][j];
 			for (int k=0;k<j;k++){
-				c[i][j]=std::max(c[i][j],c[i-1][k]+a[k+1][j-k-1]);
+				c[i][j]=std::max(c[i][j],c[i-1][k]+a[k+1][j-k]);
 			}
 		}
 	}
