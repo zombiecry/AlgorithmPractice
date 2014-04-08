@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Section 3.4 Electric Fence\fence9.cpp">
+    <ClCompile Include="Section 3.4 Raucous Rockers\rockers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
