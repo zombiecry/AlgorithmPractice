@@ -22,152 +22,100 @@
 #include <ctime>
 #include <cstring>
 using namespace std;
+#ifdef __GNUC__
+#define tr(container, it) \
+	for (typeof(container.begin()) it = container.begin(); it != container.end();it++)
 
-string gS,gA,gB;
-int lenS,lenA,lenB;
+#define trCheck(container, it) \
+	for (typeof(container.begin()) it = container.begin(); it != container.end();)
+
+#else
+#ifdef _MSC_VER
+#define tr(container, it) \
+	for (decltype(container.begin()) it = container.begin(); it != container.end();it++)
+#define trCheck(container, it) \
+	for (decltype(container.begin()) it = container.begin(); it != container.end();)
+
+#endif
+#endif
+typedef std::pair <int,int> scPair2i;
+
 class MergeStrings
         { 
         public: 
-			bool MyLess(string A,string B){
-				int minLen=std::min(A.length(),B.length());
-				for (int i=0;i<minLen;i++){
-					if (A[i]<B[i]){
-						return true;
-					}
-					else if (A[i]>B[i]){
-						return false;
-					}
-				}
-				if (A.length()>=B.length()){
-					return true;
-				}
-				return false;
+		bool Match(char ch1,char ch2){
+			if (ch1=='?'){
+				return true;
 			}
-			bool f(int pS,int pA,int pB,string &res){
-				if (pS==lenS){
-					res="";
-					return true;
+			return ch1==ch2;
+		}
+
+
+		bool Match(string s1,string s2){
+			for (int i=0;i<s1.length();i++){
+				if (!Match(s1[i],s2[i])){
+					return false;
 				}
-				string leftA=gA.substr(pA,string::npos);
-				string leftB=gB.substr(pB,string::npos);
-				char curS=gS[pS];
-				char curA='*';
-				if (pA<lenA){
-					curA=gA[pA];
-				}
-				
-				char curB='*';
-				if (pB<lenB){
-					curB=gB[pB];
-				}
-				string temp;
-				if (MyLess(leftA,leftB)){	//a first
-					if (curS=='?'){
-						if (pA<lenA){
-							temp+=curA;
-							string tempRes;
-							if (f(pS+1,pA+1,pB,tempRes)){
-								temp+=tempRes;
-								res=temp;
-								return true;
-							}
-						}
-						temp="";
-						if (pB<lenB){
-							temp+=curB;
-							string tempRes;
-							if (f(pS+1,pA,pB+1,tempRes)){
-								temp+=tempRes;
-								res=temp;
-								return true;
-							}
-						}
-					}
-					else {
-						if (curS==curA){
-							temp+=curA;
-							string tempRes;
-							if (f(pS+1,pA+1,pB,tempRes)){
-								temp+=tempRes;
-								res=temp;
-								return true;
-							}
-						}
-						temp="";
-						if (curS==curB){
-							temp+=curB;
-							string tempRes;
-							if (f(pS+1,pA,pB+1,tempRes)){
-								temp+=tempRes;
-								res=temp;
-								return true;
-							}
-						}
+			}
+			return true;
+		}
+        string getmin(string S, string A, string B) 
+            { 
+				int n=S.length();
+				int m1=A.length();
+				int m2=B.length();
+				string c[50][50];
+				for (int i=0;i<m1;i++){
+					string sLeft=S.substr(i+m2);
+					string aLeft=A.substr(i);
+					if (Match(sLeft,aLeft)){
+						c[i][m2]=aLeft;
 					}
 				}
-				else{
-					if (curS=='?'){
-						if (pB<lenB){
-							temp+=curB;
-							string tempRes;
-							if (f(pS+1,pA,pB+1,tempRes)){
-								temp+=tempRes;
-								res=temp;
-								return true;
+
+				for (int i=0;i<m2;i++){
+					string sLeft=S.substr(i+m1);
+					string bLeft=B.substr(i);
+					if (Match(sLeft,bLeft)){
+						c[m1][i]=bLeft;
+					}
+				}
+
+
+				for (int i=m1-1;i>=0;i--){
+					for (int j=m2-1;j>=0;j--){
+						string s1="";
+						string s2="";
+						if (c[i+1][j].length()>0){
+							if (Match(S[i+j],A[i])){
+								s1=A[i]+c[i+1][j];
 							}
 						}
-						temp="";
-						if (pA<lenA){
-							temp+=curA;
-							string tempRes;
-							if (f(pS+1,pA+1,pB,tempRes)){
-								temp+=tempRes;
-								res=temp;
-								return true;
+						if (c[i][j+1].length()>0){
+							if (Match(S[i+j],B[j])){
+								s2=B[j]+c[i][j+1];
+							}
+						}
+						if (s1.length()>0 && s2.length()>0){
+							c[i][j]=min(s1,s2);
+						}
+						else{
+							if (s1.length()>0){
+								c[i][j]=s1;
+							}
+							if (s2.length()>0){
+								c[i][j]=s2;
 							}
 						}
 
 					}
-					else {
-						if (curS==curB){
-							temp+=curB;
-							string tempRes;
-							if (f(pS+1,pA,pB+1,tempRes)){
-								temp+=tempRes;
-								res=temp;
-								return true;
-							}
-						}
-						temp="";
-						if (curS==curA){
-							temp+=curA;
-							string tempRes;
-							if (f(pS+1,pA+1,pB,tempRes)){
-								temp+=tempRes;
-								res=temp;
-								return true;
-							}
-						}
-					}
 				}
-				return false;
-			}
-        string getmin(string S, string A, string B) 
-            { 
-				lenS=S.length();
-				lenA=A.length();
-				lenB=B.length();
-				gS=S;
-				gA=A;
-				gB=B;
-				string res;
-				f(0,0,0,res);
-				return res;
+				return c[0][0];
             } 
         
 // BEGIN CUT HERE
 	public:
-	void run_test(int Case) { if ((Case == -1) || (Case == 0)) test_case_0(); if ((Case == -1) || (Case == 1)) test_case_1(); if ((Case == -1) || (Case == 2)) test_case_2(); if ((Case == -1) || (Case == 3)) test_case_3(); if ((Case == -1) || (Case == 4)) test_case_4();if ((Case == -1) || (Case == 5)) test_case_5(); }
+	void run_test(int Case) { if ((Case == -1) || (Case == 0)) test_case_0(); if ((Case == -1) || (Case == 1)) test_case_1(); if ((Case == -1) || (Case == 2)) test_case_2(); if ((Case == -1) || (Case == 3)) test_case_3(); if ((Case == -1) || (Case == 4)) test_case_4(); }
 	private:
 	template <typename T> string print_array(const vector<T> &V) { ostringstream os; os << "{ "; for (typename vector<T>::const_iterator iter = V.begin(); iter != V.end(); ++iter) os << '\"' << *iter << "\","; os << " }"; return os.str(); }
 	void verify_case(int Case, const string &Expected, const string &Received) { cerr << "Test Case #" << Case << "..."; if (Expected == Received) cerr << "PASSED" << endl; else { cerr << "FAILED" << endl; cerr << "\tExpected: \"" << Expected << '\"' << endl; cerr << "\tReceived: \"" << Received << '\"' << endl; } }
@@ -176,7 +124,7 @@ class MergeStrings
 	void test_case_2() { string Arg0 = "PARROT"; string Arg1 = "PARROT"; string Arg2 = ""; string Arg3 = "PARROT"; verify_case(2, Arg3, getmin(Arg0, Arg1, Arg2)); }
 	void test_case_3() { string Arg0 = "???????????"; string Arg1 = "AZZAA"; string Arg2 = "AZAZZA"; string Arg3 = "AAZAZZAAZZA"; verify_case(3, Arg3, getmin(Arg0, Arg1, Arg2)); }
 	void test_case_4() { string Arg0 = "????K??????????????D???K???K????????K?????K???????"; string Arg1 = "KKKKKDKKKDKKDDKDDDKDKK"; string Arg2 = "KDKDDKKKDDKDDKKKDKDKKDDDDDDD"; string Arg3 = "KDKDKDKKKDDKDDKKKDKDKKDKDDDKDDDKKDKKKDKKDDKDDDKDKK"; verify_case(4, Arg3, getmin(Arg0, Arg1, Arg2)); }
-	void test_case_5() { string Arg0 ="WYTDYPFYWTBTCBWQIDFZLLWFW";string Arg1 = "WYTDYPFYWTBTCBWQIDFZLL";string Arg2 = "WFW";string Arg3="WYTDYPFYWTBTCBWQIDFZLLWFW"; verify_case(5, Arg3, getmin(Arg0, Arg1, Arg2));}
+
 // END CUT HERE
  
         };
