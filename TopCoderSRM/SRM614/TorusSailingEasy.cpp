@@ -25,36 +25,59 @@ typedef long long ll;
 #define se(x) cerr<<" "<<x 
 #define pb push_back
 #define mp make_pair
-
+const double eps=1e-5;
 
 int n,m;
+const int MAX_DAYS = 11*11;
+const int MAX_I = 1000;
 class TorusSailingEasy
 {
         public:
         double expectedTime(int N, int M, int goalX, int goalY)
         {
-            int i=1;
-			int curX=0;
-			int curY=0;
-			double x=-1;
-			while(true){
-				curX=(i)%N;
-				curY=(i)%M;
-				if (curX==0 &&curY==0){
-					break;
+			int xPos=0;
+			int yPos=0;
+			int i=0;
+			int x=-1;
+			bool passFlag=false;
+			for (;;i++){
+				xPos=i%N;
+				yPos=i%M;
+				if (xPos==0 && yPos==0 ){
+					if (!passFlag){
+						passFlag=true;
+					}
+					else{
+						break;
+					}
 				}
-				if (curX==goalX && curY==goalY){
+				else if (xPos==goalX && yPos==goalY){
 					x=i;
 				}
-				i++;
 			}
-			if (x<0){
-				return -1.0;
+			if (x==-1){
+				return -1.0f;
 			}
-			double y=i-x;
-			double possi1=2*x/(pow(2,x));
-			double possi2=2*y/(pow(2,y));
-			return possi1+possi2;
+			int y=i-x;
+			if (y>x){
+				swap(x,y);
+			}
+			int c[MAX_I+1][MAX_DAYS];
+			for (int i=0;i<=MAX_DAYS;i++){
+				c[0][i]=0;
+			}
+			c[0][y]=1;
+			for (int i=1;i<=MAX_I;i++){
+				for (int j=0;j<=x+y;j++){
+					if (j<=0 && j<=x-2){
+						c[i][j]=
+					}
+				}
+			}
+
+
+
+			return ;
         }
         
 // BEGIN CUT HERE
@@ -76,7 +99,7 @@ int main()
 {
         TorusSailingEasy ___test;
         //___test.run_test(-1);
-		___test.run_test(0);
+		___test.run_test(2);
         system("pause");
         return 0;
 }

@@ -28,26 +28,115 @@ typedef long long ll;
 
 
 int n,m;
+int total;
 
-
+#define GETX(x) \
+	(x%m)
+#define GETY(x) \
+	(x/m)
+#define GETINDEX(x,y)   \
+	(x+y*m)
 typedef std::pair <int,int> scPair2i;
 
 class TwoLLogo
 {
         public:
-		long long CountPos(int x,int y){
-		}
-        long long countWays(vector <string> grid)
-        {
-            std::vector <int> c;
-			n=grid.size();
-			m=grid[0].size();
-			c.resize(m*n);
-			for (int i=0;i<m;i++){
-				for (int j=0;j<n;j++){
-					c[][]count(i,j);
+		
+		bool GetS(int x,int y,vector <string> &grid,int &sx,int &sy){
+			int i=0;
+			for (;i+x<m;i++){
+				if (grid[y][x+i]=='#'){
+					break;
 				}
 			}
+			if (i<=1){
+				return false;
+			}
+			sx=i-1;
+
+			i=0;
+			for (;y-i>=0;i++){
+				if (grid[y-i][x]=='#'){
+					break;
+				}
+			}
+			if (i<=1){
+				return false;
+			}
+			sy=i-1;
+			return true;
+		}
+
+        long long countWays(vector <string> grid)
+        {
+			n=grid.size();
+			m=grid[0].size();
+			total=m*n;
+			vector <bool> possiblePoints(total,false);
+			vector <int>  sx(total,-1);
+			vector <int>  sy(total,-1);
+			for (int i=0;i<total;i++){
+				int x=GETX(i);
+				int y=GETY(i);
+				if (grid[y][x]=='#'){
+					possiblePoints[i]=false;
+					continue;
+				}
+				if (!GetS(x,y,grid,sx[i],sy[i])){
+					possiblePoints[i]=false;
+					continue;
+				}
+				possiblePoints[i]=true;
+			}
+
+
+			long long countNum=0;
+			for (int i=0;i<total-1;i++){
+				if (!possiblePoints[i]){continue;}
+
+				for (int j=i+1;j<total;j++){
+					if (!possiblePoints[j]){continue;}
+					int x1=GETX(i);
+					int y1=GETY(i);
+					int sx1=sx[i];
+					int sy1=sy[i];
+
+					int x2=GETX(j);
+					int y2=GETY(j);
+					int sx2=sx[j];
+					int sy2=sy[j];
+
+					if (x2<x1){
+						swap(x1,x2);
+						swap(y1,y2);
+						swap(sx1,sx2);
+						swap(sy1,sy2);
+					}
+					int curCount=0;
+					for (int lx1=1;lx1<=sx1;lx1++){
+						for (int ly2=1;ly2<=sy2;ly2++){
+							if (x1==x2){
+								if (y1<y2-ly2){
+									curCount++;
+								}
+							}
+							else {//x1<x2
+								if (x1+lx1<x2){
+									curCount++;
+								}
+								else {	//x1+lx1>=x2
+									if (y2<y1||
+										y2-ly2>y1){
+										curCount++;
+									}
+								}
+							}
+						}
+					}
+					countNum+=curCount*sy1*sx2;
+				}
+			}
+			return countNum;
         }
         
 // BEGIN CUT HERE

@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="TwoLLogo.cpp">
+    <ClCompile Include="SRM614\TorusSailingEasy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

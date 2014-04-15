@@ -44,6 +44,7 @@ const int INF = 0xfffffff;
 int   mat[MAX_MN][MAX_MN];
 int   e[MAX_MN+2][MAX_MN+2];	//cost
 int   c[MAX_MN+2][MAX_MN+2];	//capacity
+int   r[MAX_MN+2][MAX_MN+2];	//residel
 int   f[MAX_MN+2][MAX_MN+2];	//flow
 int   s,t;
 
