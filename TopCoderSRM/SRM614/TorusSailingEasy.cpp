@@ -69,15 +69,21 @@ class TorusSailingEasy
 			c[0][y]=1;
 			for (int i=1;i<=MAX_I;i++){
 				for (int j=0;j<=x+y;j++){
-					if (j<=0 && j<=x-2){
-						c[i][j]=
+					c[i][j]=0;
+					if (j<=x+y-2){
+						c[i][j]+=c[i-1][j+1];
+					}
+					if (j>=2){
+						c[i][j]+=c[i-1][j-1];
 					}
 				}
 			}
-
-
-
-			return ;
+			double possib=0.0f;
+			for (int i=1;i<=MAX_I;i++){
+				double curPossib=double(c[i][0]+c[i][x+y]);
+				possib+=double(i)*curPossib/pow(2.0,double(i));
+			}
+			return possib;
         }
         
 // BEGIN CUT HERE
