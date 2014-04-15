@@ -29,7 +29,7 @@ const double eps=1e-5;
 
 int n,m;
 const int MAX_DAYS = 11*11;
-const int MAX_I = 1000;
+const int MAX_I = 1000000;
 class TorusSailingEasy
 {
         public:
@@ -62,25 +62,25 @@ class TorusSailingEasy
 			if (y>x){
 				swap(x,y);
 			}
-			int c[MAX_I+1][MAX_DAYS];
+			int c0[MAX_DAYS+1];
+			int c1[MAX_DAYS+1];
 			for (int i=0;i<=MAX_DAYS;i++){
-				c[0][i]=0;
+				c0[i]=0;
 			}
-			c[0][y]=1;
-			for (int i=1;i<=MAX_I;i++){
-				for (int j=0;j<=x+y;j++){
-					c[i][j]=0;
-					if (j<=x+y-2){
-						c[i][j]+=c[i-1][j+1];
-					}
-					if (j>=2){
-						c[i][j]+=c[i-1][j-1];
-					}
-				}
-			}
+			c0[y]=1;
 			double possib=0.0f;
 			for (int i=1;i<=MAX_I;i++){
-				double curPossib=double(c[i][0]+c[i][x+y]);
+				for (int j=0;j<=x+y;j++){
+					c1[j]=0;
+					if (j<=x+y-2){
+						c1[j]+=c0[j+1];
+					}
+					if (j>=2){
+						c1[j]+=c0[j-1];
+					}
+				}
+				memcpy(c0,c1,(x+y+1)*sizeof(int));
+				double curPossib=double(c0[0]+c0[x+y]);
 				possib+=double(i)*curPossib/pow(2.0,double(i));
 			}
 			return possib;
