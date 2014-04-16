@@ -58,32 +58,22 @@ class TorusSailingEasy
 			if (x==-1){
 				return -1.0f;
 			}
-			int y=i-x;
-			if (y>x){
-				swap(x,y);
+			n=i;
+			vector <double> a(n+1,-1);
+			vector <double> b(n+1,-1);
+			a[0]=0;
+			b[0]=0;
+			a[1]=1;
+			b[1]=0;
+			for (i=2;i<=n;i++){
+				a[i]=2*a[i-1]-a[i-2];
+				b[i]=2*b[i-1]-b[i-2]-2;
 			}
-			int c0[MAX_DAYS+1];
-			int c1[MAX_DAYS+1];
-			for (int i=0;i<=MAX_DAYS;i++){
-				c0[i]=0;
-			}
-			c0[y]=1;
-			double possib=0.0f;
-			for (int i=1;i<=MAX_I;i++){
-				for (int j=0;j<=x+y;j++){
-					c1[j]=0;
-					if (j<=x+y-2){
-						c1[j]+=c0[j+1];
-					}
-					if (j>=2){
-						c1[j]+=c0[j-1];
-					}
-				}
-				memcpy(c0,c1,(x+y+1)*sizeof(int));
-				double curPossib=double(c0[0]+c0[x+y]);
-				possib+=double(i)*curPossib/pow(2.0,double(i));
-			}
-			return possib;
+			
+			double e1=-b[n]/a[n];
+			double ex=a[x]*e1+b[x];
+			return ex;
+			
         }
         
 // BEGIN CUT HERE
@@ -105,7 +95,7 @@ int main()
 {
         TorusSailingEasy ___test;
         //___test.run_test(-1);
-		___test.run_test(2);
+		___test.run_test(-1);
         system("pause");
         return 0;
 }
