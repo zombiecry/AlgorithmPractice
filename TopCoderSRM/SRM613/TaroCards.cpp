@@ -33,22 +33,26 @@ typedef std::pair <int,int> scPair2i;
 int n,m;
 const int MAX_S= 1024-1;
 const int MAX_R= 40;
-const int MAX_N= 49;
+const int MAX_N= 50;
 #define HASNUM(x)	\
 	(s & (1<<(x-1)))
-long long c[MAX_N][MAX_S+1][MAX_R+1];
+ll c[MAX_N][MAX_S+1][MAX_R+1];
 
 class TaroCards
 {
         public:
 		int Minus(int s,int x){
+			if (x>10){
+				return s;
+			}
 			return s-(s&(1<<(x-1)));	
 		}
         long long getNumber(vector <int> first, vector <int> second, int K)
         {
 			n=first.size();
+			m=max(n-10,0);
 			for (int s=0;s<=MAX_S;s++){
-				for (int r=0;r<=MAX_R;r++){
+				for (int r=0;r<=m;r++){
 					int a=first[0];
 					int b=second[0];
 					int mask=0;
@@ -81,7 +85,7 @@ class TaroCards
 			set<int> cs;
 			for (int i=1;i<n;i++){
 				for (int s=0;s<=MAX_S;s++){
-					for (int r=0;r<=MAX_R;r++){
+					for (int r=0;r<=m;r++){
 						int a=first[i];
 						int b=second[i];
 						int mask[2]={0,0};
@@ -113,6 +117,7 @@ class TaroCards
 							cs.insert(s2);
 							cs.insert(s3);
 							set<int>::iterator it;
+
 							tr(cs,it){
 								c[i][s][r]+=c[i-1][*it][r-rnumt];
 							}
@@ -122,7 +127,7 @@ class TaroCards
 			}
 			long long wayNum=0;
 			for (int s=0;s<=MAX_S;s++){
-				for (int r=0;r<=MAX_R;r++){
+				for (int r=0;r<=m;r++){
 					int mask=1;
 					int intNum=0;
 					for (int i=0;i<10;i++){
@@ -132,7 +137,7 @@ class TaroCards
 						mask=mask<<1;
 					}
 					intNum+=r;
-					long long tmp=c[n-1][s][r];
+					ll tmp=c[n-1][s][r];
 					if (intNum<=K && tmp){
 						wayNum+=tmp;
 					}
@@ -155,12 +160,12 @@ class TaroCards
 	void test_case_4() { int Arr0[] = {1}; vector <int> Arg0(Arr0, Arr0 + (sizeof(Arr0) / sizeof(Arr0[0]))); int Arr1[] = {2}; vector <int> Arg1(Arr1, Arr1 + (sizeof(Arr1) / sizeof(Arr1[0]))); int Arg2 = 1; long long Arg3 = 1LL; verify_case(4, Arg3, getNumber(Arg0, Arg1, Arg2)); }
 	void test_case_5() { int Arr0[] = {6, 20, 1, 11, 19, 14, 2, 8, 15, 21, 9, 10, 4, 16, 12, 17, 13, 22, 7, 18, 3, 5}; vector <int> Arg0(Arr0, Arr0 + (sizeof(Arr0) / sizeof(Arr0[0]))); int Arr1[] = {4, 5, 10, 7, 6, 2, 1, 10, 10, 7, 9, 4, 5, 9, 5, 10, 10, 3, 6, 6, 4, 4}; vector <int> Arg1(Arr1, Arr1 + (sizeof(Arr1) / sizeof(Arr1[0]))); int Arg2 = 14; long long Arg3 = 2239000LL; verify_case(5, Arg3, getNumber(Arg0, Arg1, Arg2)); }
 	void test_case_6() { 
-		int Arr0[] = {7, 29, 19, 18, 24, 27, 28, 25, 22, 21, 1, 38, 10, 11, 4, 23, 8, 30, 9, 32, 2, 33, 3, 40, 14, 12, 31, 39, 26, 37, 13, 41, 42, 34, 17, 36, 16, 20, 6, 5, 15, 35};
+	    int Arr0[]={42, 32, 6, 46, 17, 35, 9, 36, 11, 10, 41, 27, 31, 44, 19, 3, 2, 47, 26, 38, 1, 24, 20, 8, 16, 33, 28, 49, 48, 50, 37, 39, 40, 5, 23, 25, 34, 21, 18, 12, 22, 15, 14, 7, 30, 43, 4, 13, 29, 45};
 		vector <int> Arg0(Arr0, Arr0 + (sizeof(Arr0) / sizeof(Arr0[0]))); 
-		int Arr1[] = {4, 4, 5, 2, 2, 4, 9, 8, 5, 3, 8, 8, 10, 4, 2, 10, 9, 7, 6, 1, 3, 9, 7, 1, 3, 5, 9, 7, 6, 1, 10, 1, 1, 7, 2, 4, 9, 10, 4, 5, 5, 7};
+		int Arr1[]={10, 8, 7, 10, 4, 6, 8, 7, 7, 6, 9, 3, 6, 5, 5, 2, 7, 2, 7, 4, 4, 6, 6, 4, 3, 9, 3, 6, 4, 7, 2, 9, 7, 3, 2, 5, 7, 3, 10, 2, 6, 1, 4, 7, 5, 10, 3, 10, 4, 5};
 		vector <int> Arg1(Arr1, Arr1 + (sizeof(Arr1) / sizeof(Arr1[0])));
-		int Arg2 = 72;
-		long long Arg3 = 4398046511104LL;
+		int Arg2 = 58;
+		long long Arg3 = 1125899906842624LL;
 		verify_case(6, Arg3, getNumber(Arg0, Arg1, Arg2)); 
 	}
 
