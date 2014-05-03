@@ -22,8 +22,18 @@
 #include <ctime>
 #include <cstring>
 using namespace std;
+typedef std::map<int,int> scMapii;
+typedef std::map<int,int>::iterator scMapiiIter;
+typedef std::map<int,int>::reverse_iterator scMapiiRevIter;
 #define tr(container,it)    \
     for (it=container.begin();it!=container.end();it++)
+#define trRev(container,it)    \
+	for (it=container.rbegin();it!=container.rend();it++)
+#define scFor0(x,num) \
+	for (int x=0;x<num;x++)
+#define scFor1(x,start,num) \
+	for (int x=start;x<num;x++)
+
 typedef std::pair <int,int> scPair2i;
 int n;
 class MovingRooksDiv2
@@ -32,40 +42,38 @@ class MovingRooksDiv2
         string move(vector <int> Y1, vector <int> Y2) 
             { 
 				n=Y1.size();
-				map <int,int> cMap;
-				for (int i=0;i<n;i++){
-					cMap[Y1[i]]=i;
-				}
-				bool canFlag=true;
-				for (int i=0;i<n;i++){
+				string impStr="Impossible";
+				string pStr="Possible";
+				scMapii cMap;
+				scFor0(i,n){
 					if (Y1[i]!=Y2[i]){
-						int r1=i;
+						//build map
+						cMap.clear();
+						scFor1(j,i+1,n){
+							cMap[Y1[j]]=j;
+						}
+						
 						int c1=Y1[i];
 						int c2=Y2[i];
 						if (c1<c2){
-							canFlag=false;
-							break;
+							return impStr;
 						}
 						if (!cMap.count(c2)){
-							canFlag=false;
-							break;
+							return impStr;
 						}
-						int r2=cMap[Y2[i]];
-						if (r2<r1){
-							canFlag=false;
-							break;
+						int r2=cMap[c2];
+						int last=c1;
+						scMapiiRevIter it;
+						trRev(cMap,it){
+							if (it->first<c1 && it->first>=c2
+								&& it->second<=r2){
+								Y1[it->second]=last;
+								last=it->first;
+							}
 						}
-						cMap.erase(cMap[c2]);
-						cMap[c1]=r2;
-						Y1[r2]=c1;
 					}
 				}
-				if (canFlag){
-					return "Possible";
-				}
-				else {
-					return "Impossible";
-				}
+				return pStr;
             } 
         
 // BEGIN CUT HERE
