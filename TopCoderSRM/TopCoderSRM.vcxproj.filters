@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="SRM613\TaroCards.cpp">
+    <ClCompile Include="MovingRooksDiv2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
