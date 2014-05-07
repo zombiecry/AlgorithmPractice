@@ -47,31 +47,44 @@ class MiningGoldEasy
 		int M;
 		vector <int> event_i;
 		vector <int> event_j;
-
+		int mem[50][50][50];
 		int Solve(int x,int y,int eStart){
+			if (mem[x][y][eStart]!=-1){
+				return mem[x][y][eStart];
+			}
+
 			int curGold=0;
-			curGold=M+N-(abs(x-event_i[eStart])+abs(y-event_j[eStart]));
+			curGold=M+N-(abs(event_i[x]-event_i[eStart])+abs(event_j[y]-event_j[eStart]));
 			if (eStart==n-1){
+				mem[x][y][eStart]=curGold;
 				return curGold;
 			}
 			int resGold=-1;
-			for (int i=eStart+1;i<n;i++){
-				resGold=max(Solve(x         ,event_j[i] ,eStart+1),resGold);
-				resGold=max(Solve(event_i[i],y          ,eStart+1),resGold);
+			scFor1(i,eStart+1,n){
+				resGold=max(Solve(x,i,eStart+1),resGold);
+				resGold=max(Solve(i,y,eStart+1),resGold);
 			}
-			return curGold+resGold;
+			mem[x][y][eStart]=curGold+resGold;
+			return mem[x][y][eStart];
 		}
         int GetMaximumGold(int N, int M, vector <int> event_i, vector <int> event_j) 
             { 
 				n=event_i.size();
+				scFor0(i,n){
+					scFor0(j,n){
+						scFor0(k,n){
+							mem[i][j][k]=-1;
+						}
+					}
+				}
 				this->N=N;
 				this->M=M;
 				this->event_i=event_i;
 				this->event_j=event_j;
 				int gold=-1;
-				for (int i=0;i<n;i++){
-					for (int j=0;j<n;j++){
-						gold=max(gold,Solve(event_i[i],event_j[j],0));
+				scFor0(i,n){
+					scFor0(j,n){
+						gold=max(gold,Solve(i,j,0));
 					}
 				}
 				return gold;
@@ -98,7 +111,7 @@ class MiningGoldEasy
     int main()
         {
         MiningGoldEasy ___test; 
-        ___test.run_test(4); 
+        ___test.run_test(-1); 
         system("pause");
         } 
     // END CUT HERE 
