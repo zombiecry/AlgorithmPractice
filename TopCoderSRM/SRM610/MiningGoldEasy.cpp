@@ -45,8 +45,8 @@ class MiningGoldEasy
         public: 
 		int N;
 		int M;
-		vector <int> event_i;
-		vector <int> event_j;
+		scVeci event_i;
+        scVeci event_j;
 		int mem[50][50][50];
 		int Solve(int x,int y,int eStart){
 			if (mem[x][y][eStart]!=-1){
