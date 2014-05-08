@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="EmployManager.cpp">
+    <ClCompile Include="MiningGoldEasy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

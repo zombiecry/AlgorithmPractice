@@ -43,9 +43,38 @@ int m,n;
 class MiningGoldEasy
         { 
         public: 
+		int N;
+		int M;
+		vector <int> event_i;
+		vector <int> event_j;
+
+		int Solve(int x,int y,int eStart){
+			int curGold=0;
+			curGold=M+N-(abs(x-event_i[eStart])+abs(y-event_j[eStart]));
+			if (eStart==n-1){
+				return curGold;
+			}
+			int resGold=-1;
+			for (int i=eStart+1;i<n;i++){
+				resGold=max(Solve(x         ,event_j[i] ,eStart+1),resGold);
+				resGold=max(Solve(event_i[i],y          ,eStart+1),resGold);
+			}
+			return curGold+resGold;
+		}
         int GetMaximumGold(int N, int M, vector <int> event_i, vector <int> event_j) 
             { 
-            //$CARETPOSITION$ 
+				n=event_i.size();
+				this->N=N;
+				this->M=M;
+				this->event_i=event_i;
+				this->event_j=event_j;
+				int gold=-1;
+				for (int i=0;i<n;i++){
+					for (int j=0;j<n;j++){
+						gold=max(gold,Solve(event_i[i],event_j[j],0));
+					}
+				}
+				return gold;
             } 
         
 // BEGIN CUT HERE
@@ -69,7 +98,7 @@ class MiningGoldEasy
     int main()
         {
         MiningGoldEasy ___test; 
-        ___test.run_test(-1); 
+        ___test.run_test(4); 
         system("pause");
         } 
     // END CUT HERE 
