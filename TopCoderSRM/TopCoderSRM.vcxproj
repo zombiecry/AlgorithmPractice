@@ -10,6 +10,9 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="VocaloidsAndSongs.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{18A6B773-7C3E-4EE0-B789-B0FA32829C1D}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
