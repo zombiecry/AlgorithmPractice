@@ -39,7 +39,7 @@ typedef std::map<int,int>::reverse_iterator scMapiiRevIter;
 #define scFor1(x,start,num) \
 	for (int x=start;x<num;x++)
 
-#define MODNUM 1000000007
+#define MODNUM 1000000007L
 int m,n;
 class VocaloidsAndSongs
         { 
@@ -128,20 +128,12 @@ class VocaloidsAndSongs
 									combo*=CalcC(p[ii],left);
 									combo%=MODNUM;
 									left-=p[ii];
-									sVec[sVec.size()-1].push_back(p[ii]);
 								}
 
 								res+=combo;
 								res%=MODNUM;
 
 							}	
-						}
-					}
-				}
-				scFor0(i,sVec.size()){
-					scFor1(j,i+1,sVec.size()){
-						if (sVec[i]==sVec[j]){
-							cout<<"Error\n";
 						}
 					}
 				}
