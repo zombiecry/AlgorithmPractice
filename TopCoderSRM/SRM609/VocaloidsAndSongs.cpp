@@ -38,6 +38,8 @@ typedef std::map<int,int>::reverse_iterator scMapiiRevIter;
 	for (int x=0;x<num;x++)
 #define scFor1(x,start,num) \
 	for (int x=start;x<num;x++)
+#define scForInv1(x,start,end) \
+	for (int x=start;x>=end;x--)
 
 #define MODNUM 1000000007L
 int m,n;
@@ -58,16 +60,16 @@ class VocaloidsAndSongs
 				cout<<"Error!\n\n\n\n\n\nError\n";
 				return 0;
 			}
-
-			double up=1;
-			scFor1(a,x+1,y+1){
-				up*=(double)a;
+			scLLUi up=1;
+			int j=1;
+			scForInv1(a,y,x+1){
+				up*=a;
+				while (j<=y-x && up%j==0){
+					up/=j;
+					j++;
+				}
 			}
-			double down=1;
-			scFor1(a,1,y-x+1){
-				down*=(double)a;
-			}
-			double res=up/down;
+			scLLUi res=up;
 			mem[x][y]=((scLLUi)res)%MODNUM;
 			return mem[x][y];
 		}
@@ -88,7 +90,7 @@ class VocaloidsAndSongs
 					sumS+=s[i];
 				}
 				vector <scVeci> sVec;
-				int res=0;
+				scLLUi res=0;
 				scFor0(x,S+1){
 					scFor0(y,S+1){
 						scFor0(z,S+1){
@@ -96,7 +98,6 @@ class VocaloidsAndSongs
 								a[0]=x;
 								a[1]=y;
 								a[2]=z;
-								int xy,yz,xz,xyz;
 								int sumA=x+y+z;
 								c=sumS-2*n+sumA;
 								if (c<0){
@@ -122,15 +123,16 @@ class VocaloidsAndSongs
 								memcpy(p+3,b,3*sizeof(int));
 								p[6]=c;
 								int left=n;
-								scLLi combo=1;
+								scLLUi combo=1;
 								sVec.resize(sVec.size()+1);
 								scFor0(ii,7){
-									combo*=CalcC(p[ii],left);
-									combo%=MODNUM;
+									scLLUi cur=CalcC(p[ii],left);
+									combo*=cur;
+									combo=combo % MODNUM;
 									left-=p[ii];
 								}
-
-								res+=combo;
+								
+								res+=(combo);
 								res%=MODNUM;
 
 							}	
@@ -160,7 +162,7 @@ class VocaloidsAndSongs
     int main()
         {
         VocaloidsAndSongs ___test; 
-        ___test.run_test(4); 
+        ___test.run_test(-1); 
         system("pause");
         } 
     // END CUT HERE 
