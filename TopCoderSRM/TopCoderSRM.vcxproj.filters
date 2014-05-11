@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="VocaloidsAndSongs.cpp">
+    <ClCompile Include="RandomGraph.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
