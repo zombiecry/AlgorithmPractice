@@ -42,10 +42,28 @@ int n,m;
 class RandomGraph
 {
         public:
+			long double c[51];
+			long double Q[51*3];
         double probability(int n, int p)
         {
-            int i=0;
-			scVeci c(n*(n-1),-1);
+			c[1]=c[2]=c[3]=1;
+			if (n<=3){
+				return 1.0-c[n];
+			}
+			long double p0=((long double)p)/1000.0;
+			long double q=1.0-p0;
+			Q[0]=1;
+			scFor1(i,1,n*3){
+				Q[i]=Q[i-1]*(1-p0);
+			}
+			scFor1(i,4,n+1){
+				//c[i]=P1[i]*c[i-1]+P2[i]*c[i-2]+P3[i]*c[i-3];
+				c[i]=Q[i-1]*c[i-1]+
+					 (i-1)*p0*Q[i-2]*Q[i-2]*c[i-2]+
+					 ((i-1)*(i-2)/2)*p0*p0*Q[i-3]*Q[i-3]*Q[i-3]  *c[i-3]+
+					 (i-1)*(i-2)    *p0*p0*Q[i-3]*Q[i-3]*Q[i-3]*q*c[i-3];
+			}
+			return 1.0-c[n];
 
         }
         
