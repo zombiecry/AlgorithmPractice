@@ -41,7 +41,7 @@ typedef std::map<int,int>::reverse_iterator scMapiiRevIter;
 #define scForInv1(x,start,end) \
 	for (int x=start;x>=end;x--)
 
-#define MODNUM 1000000007
+#define MODNUM 1000000007L
 int m,n;
 class VocaloidsAndSongs
         { 
