@@ -15,7 +15,11 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+<<<<<<< HEAD
+    <ClCompile Include="RandomGraph.cpp">
+=======
     <ClCompile Include="CombinationLockDiv2.cpp">
+>>>>>>> e5aaab4a942939aa242a0b434855294fe30135fa
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
