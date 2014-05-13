@@ -48,71 +48,44 @@ int m,n;
 class CombinationLockDiv2
         { 
         public: 
-			scVeci x;
-			scVeci y;
-			void CalcDx(int a,int b,int &dx1,int &dx2,int &d){
-				if (a<=b){
-					dx1=b-a;
-					dx2=a+10-b;
-				}
-				else {
-					dx1=10-a+b;
-					dx2=a-b;
-				}
-				d=dx1-dx2;
+			scVeci c;
+			int    mem[52][9*50+2][3];
+		int Solve(int p,int x,int dir){
+			if (p==n){
+				return 0;
 			}
-			int Solve(int s,int l){
-				scFor1(i,s,s+l){
-					if (x[i]==y[i]){
-						return 0;
-					}
+			if (mem[p][x][dir+1]!=-1){
+				return mem[p][x][dir+1];
+			}
+			int res=0x7fffffff;
+			scFor1(d,-1,2){
+				if (d==0){
+					continue;
 				}
-				int dx1,dx2,d;
-				CalcDx(x[s],y[s],dx1,dx2,d);
-				int minRot=INF;
-				scFor1(i,s,s+l){
-					int curD1,curD2,curD;
-					CalcDx(x[i],y[i],curD1,curD2,curD);
-					if (curD * d <0){
-						return 0;
+				scFor1(y,0,9*n+1){
+					if ((c[p]+d*y)%10 != 0){
+						continue;
 					}
-					if (abs(curD) > abs(d)){
-						d=curD;
-					}
-					if (d<=0){
-						minRot=min(minRot,curD1);
-					}
-					if (d>=0){
-						minRot=min(minRot,curD2);
-					}
-				}
-				int res=minRot;
-				scFor1(i,s,s+l){
-					if (d<=0){
-						x[i]=x[i]+minRot;
+					if (d*dir>0){
+						res=min(res,max(y-x,0)+Solve(p+1,y,d));
 					}
 					else{
-						x[i]=x[i]+10-minRot;
+						res=min(res,y+Solve(p+1,y,d));
 					}
-					x[i]%=10;
 				}
-				return res;
 			}
+			mem[p][x][dir+1]=res;
+			return res;
+		}
         int minimumMoves(string S, string T) 
             { 
 				n=S.length();
-				x.resize(n);
-				y.resize(n);
+				c.resize(n);
+				memset(mem,-1,sizeof(mem));
 				scFor0(i,n){
-					x[i]=S[i]-'0';
-					y[i]=T[i]-'0';
+					c[i]=(S[i]-T[i]+10)%10;
 				}
-				int res=0;
-				for (int l=n;l>=1;l--){
-					for (int s=0;s+l<=n;s++){
-						res+=Solve(s,l);
-					}
-				}
+				int res=Solve(0,0,-1);
 				return res;
             } 
         
@@ -137,7 +110,7 @@ class CombinationLockDiv2
     int main()
         {
         CombinationLockDiv2 ___test; 
-        ___test.run_test(5); 
+        ___test.run_test(-1); 
         system("pause");
         } 
     // END CUT HERE 
