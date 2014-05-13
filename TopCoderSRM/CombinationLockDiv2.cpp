@@ -48,85 +48,72 @@ int m,n;
 class CombinationLockDiv2
         { 
         public: 
-			scVeci diff;
-			scVeci iS;
-			scVeci iT;
+			scVeci x;
+			scVeci y;
+			void CalcDx(int a,int b,int &dx1,int &dx2,int &d){
+				if (a<=b){
+					dx1=b-a;
+					dx2=a+10-b;
+				}
+				else {
+					dx1=10-a+b;
+					dx2=a-b;
+				}
+				d=dx1-dx2;
+			}
 			int Solve(int s,int l){
-				int a1=diff[s];
-				int rotType=0;
-				int rot=INF;
-				if (a1<=0){
-					rotType=(a1>-5)?0:1;
-				}
-				else if (a1>0){
-					rotType=(a1>5)?0:1;
-				}
 				scFor1(i,s,s+l){
-					int dx=(diff[i]);
-					if (rotType==0){
-						if (dx<0){
-
-						}
-						else if (dx>0){
-
-						}
-						else{
-							return 0;
-						}
-					}
-					else if (rotType==1){
-
+					if (x[i]==y[i]){
+						return 0;
 					}
 				}
+				int dx1,dx2,d;
+				CalcDx(x[s],y[s],dx1,dx2,d);
+				int minRot=INF;
 				scFor1(i,s,s+l){
-					int dx=(diff[i]);
-					if (rotType==0){
-						if (dx<0){
-
-						}
-						else if (dx>0){
-
-						}
-						else{
-							return 0;
-						}
+					int curD1,curD2,curD;
+					CalcDx(x[i],y[i],curD1,curD2,curD);
+					if (curD * d <0){
+						return 0;
 					}
-					else if (rotType==1){
-
+					if (abs(curD) > abs(d)){
+						d=curD;
+					}
+					if (d<=0){
+						minRot=min(minRot,curD1);
+					}
+					if (d>=0){
+						minRot=min(minRot,curD2);
 					}
 				}
-
+				int res=minRot;
 				scFor1(i,s,s+l){
-					if (rotType==0){
-
+					if (d<=0){
+						x[i]=x[i]+minRot;
 					}
-					else if (rotType==1){
-
+					else{
+						x[i]=x[i]+10-minRot;
 					}
+					x[i]%=10;
 				}
-				scFor1(i,s,s+l){
-					diff[i]=iS[i]-iT[i];
-				}
-				return rot;
+				return res;
 			}
         int minimumMoves(string S, string T) 
             { 
 				n=S.length();
-				diff.resize(n);
-				iS.resize(n);
-				iT.resize(n);
+				x.resize(n);
+				y.resize(n);
 				scFor0(i,n){
-					iS[i]=S[i]-'0';
-					iT[i]=T[i]-'0';
-					diff[i]=iS[i]-iT[i];
+					x[i]=S[i]-'0';
+					y[i]=T[i]-'0';
 				}
-				int mNum=0;
+				int res=0;
 				for (int l=n;l>=1;l--){
-					scFor0(i,n+1-l){
-						mNum+=Solve(i,l);
+					for (int s=0;s+l<=n;s++){
+						res+=Solve(s,l);
 					}
 				}
-				return mNum;
+				return res;
             } 
         
 // BEGIN CUT HERE
@@ -150,7 +137,7 @@ class CombinationLockDiv2
     int main()
         {
         CombinationLockDiv2 ___test; 
-        ___test.run_test(3); 
+        ___test.run_test(5); 
         system("pause");
         } 
     // END CUT HERE 
