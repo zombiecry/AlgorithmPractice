@@ -52,80 +52,49 @@ class AlienAndSetDiv2
         { 
         public: 
 			int K;
-			int mem[101][2048];
-		int GetFirst1(int p,bitset <11> s){
-			scFor0(i,K+1){
-				if (i+p>=2*n){
-					break;
+			typedef set<int,greater<int>> mySet;
+			typedef map <mySet,scLLi> myMap;
+			myMap cMap[101];
+		scLLi Solve(int p,mySet s){
+			if (cMap[p].count(s)){
+				return cMap[p][s];
+			}
+			if (p==0){
+				if (s.empty()){
+					cMap[p][s]=1;
+					return 1;
 				}
-				if (s[i]){
-					return i;
+				cMap[p][s]=0;
+				return 0;
+			}
+			scLLi res=0;
+			if (s.empty()){
+				mySet ns=s;
+				ns.insert(p);
+				res=(2*Solve(p-1,ns)) % MODNUM;
+			}
+			else {
+				int xn=*s.begin();
+				mySet ns1=s;
+				ns1.erase(xn);
+				res+=Solve(p-1,ns1);		//why not mult 2?
+				if (xn<p+K){
+					mySet ns2=s;
+					ns2.insert(p);
+					res+=Solve(p-1,ns2);
+					res %= MODNUM;
 				}
 			}
-			return -1;
-		}
-		void Concat(bitset <11> &s2,bitset <11> s1,int pos){
-			scFor0(i,K+1){
-				s2[i]=1;
-			}
-			scFor1(i,pos,K+1){
-				s2[i-pos]=s1[i];
-			}
-		}
-		scLLi Solve(int p,int q,bitset <11> s){
-			int count=0;
-			scFor0(i,K+1){
-				if (p+i>=2*n){
-					break;
-				}
-				if (s[i]){
-					count++;
-				}
-			}
-			if (count==2){
-				return 2;
-			}
-			int is=s.to_ulong();
-			if (mem[p][is]!=-1){
-				return mem[p][is];
-			}
-			int res=0;
-			scFor1(i,1,K+1){
-				if (p+i>=2*n){
-					break;
-				}
-				if (!s[i]){
-					continue;
-				}
-				//get s1
-				bitset <11> s1=s;
-				s1[0]=0;
-				s1[i]=0;
-				int pos=GetFirst1(p,s1);
-				bitset <11> s2;
-				Concat(s2,s1,pos);
-				res+=(Solve(p+pos,q+1,s2)) % MODNUM;
-				res%=MODNUM;
-			}
-			mem[p][is]=res;
-			return mem[p][q];
+			cMap[p][s]=res;
+			return cMap[p][s];
 		}
 
         int getNumber(int N, int K) 
             { 
 				n=N;
 				this->K=K;
-				memset(mem,-1,sizeof(mem));
-				bitset <11> s;
-				scFor0(i,11){
-					if (i<=K){
-						s[i]=1;
-					}
-					else{
-						s[i]=0;
-					}
-				}
-				int res=Solve(0,0,s);
+				mySet s;
+				int res=Solve(2*n,s);
 				return res;
             } 
         
@@ -148,7 +117,7 @@ class AlienAndSetDiv2
     int main()
         {
         AlienAndSetDiv2 ___test; 
-        ___test.run_test(-1); 
+        ___test.run_test(3); 
         system("pause");
         } 
     // END CUT HERE 
