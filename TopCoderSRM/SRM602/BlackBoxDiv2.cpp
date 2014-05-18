@@ -90,6 +90,10 @@ class BlackBoxDiv2
 				mem[x][y]=1;
 				return 1;
 			}
+			if (x==0){
+				mem[x][y]=0;
+				return 0;
+			}
 			scLLi res=0;
 			scFor0(i,y+1){
 				scFor0(j,h-y+1){
@@ -123,9 +127,6 @@ class BlackBoxDiv2
 					if (side[i]=='.'){
 						h--;
 					}
-				}
-				if (w==0 || h==0){
-					return 0;
 				}
 				memset(c,-1,sizeof(c));
 				memset(mem,-1,sizeof(mem));
