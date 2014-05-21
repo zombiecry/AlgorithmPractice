@@ -22,7 +22,12 @@ ofstream fout("nuggets.out");
 int n;
 const long long int M=2000000000;
 vector <int> a;
-
+int gcd(int x,int y){
+	if (y==0){
+		return x;
+	}
+	return gcd(y,x%y);
+}
 deque <bool> c;
 int main (){
 	fin>>n;
@@ -31,6 +36,15 @@ int main (){
 		fin>>a[i];
 	}
 	sort(a.begin(),a.end());
+	int g=a[0];
+	for (int i=0;i<n;i++){
+		g=gcd(g,a[i]);
+	}
+	if (g!=1){
+		fout<<0<<endl;
+		return 0;
+	}
+
 	int b=0;
 	int y=-1;
 	c.resize(a[n-1]+1,false);
