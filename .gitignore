@@ -17,6 +17,8 @@
 *.opensdf
 *.sdf
 *.suo
+*.vcxproj.*
+*.vcxproj
 Debug/
 ipch/
 Release/
