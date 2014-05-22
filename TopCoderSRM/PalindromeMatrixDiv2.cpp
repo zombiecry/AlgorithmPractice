@@ -50,7 +50,7 @@ class PalindromeMatrixDiv2
         public: 
         int minChange(vector <string> A, int rowCount, int columnCount) 
             { 
-            //$CARETPOSITION$ 
+
             } 
         
 // BEGIN CUT HERE
