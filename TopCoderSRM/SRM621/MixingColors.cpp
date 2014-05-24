@@ -51,24 +51,31 @@ scSeti s;
 class MixingColors
 {
         public:
-			void Add(int c){
-				scSeti::iterator it;
-				tr(s,it){
-					c=c ^ *it;
-				}
-				s.insert(c);
-			}
         int minColors(vector <int> colors)
         {
             n=colors.size();
-			s.clear();
-			scFor0(i,n){
-				if (s.empty()){
-					s.insert(colors[i]);
+			int pos=0;
+			scFor0(i,32){//elimate 1 of columns 1 by 1 bit
+				scFor1(j,pos,n){	//find one which has 1 on bit j
+					if (colors[j] >> (31-i) & 1){	
+						scFor1(k,pos,n){		//elimate
+							if (k==j){continue;}
+							if (!(colors[k] >> (31-i) &1)){continue;}
+							colors[k] = colors[k] ^ colors[j];
+						}
+						swap(colors[j],colors[pos]);
+						pos++;
+						break;
+					}
 				}
-				Add(colors[i]);	
 			}
-			return s.size();
+			int res=0;
+			scFor0(i,n){
+				if (colors[i]){
+					res++;
+				}
+			}
+			return res;
         }
         
 // BEGIN CUT HERE
