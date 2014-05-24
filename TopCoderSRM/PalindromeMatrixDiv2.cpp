@@ -48,9 +48,48 @@ int m,n;
 class PalindromeMatrixDiv2
         { 
         public: 
+			int c[9][9];
+			int vis[9][9];
         int minChange(vector <string> A, int rowCount, int columnCount) 
             { 
+				n=A.size();
+				m=A[0].size();
+				scVeci rv(n);
+				scVeci cv(n);
+				scFor0(i,n){
+					rv[i]=i;
+				}
+				scFor0(i,n){
+					cv[i]=i;
+				}
+				int rc=rowCount;
+				int cc=columnCount;
+				
+				do{
+					do{
+						vector <scPair2i> nodes;
+						memset(c,0,sizeof(c));
+						memset(vis,0,sizeof(vis));
+						scFor0(i,rc){
+							scFor0(j,m/2){
+								int u=rv[i]*m+j;
+								int v=rv[i]*m+m-1-j;
+								c[u][v]=1;
+								c[v][u]=1;
+							}
+						}
+						scFor0(i,cc){
+							scFor0(j,n/2){
+								int u=j*m+cv[i];
+								int v=(n-1-j)*m+cv[i];
+								c[u][v]=1;
+								c[v][u]=1;
+							}
+						}
 
+
+					}while(next_permutation(cv.begin(),cv.end()));
+				}while(next_permutation(rv.begin(),rv.end()));
             } 
         
 // BEGIN CUT HERE
