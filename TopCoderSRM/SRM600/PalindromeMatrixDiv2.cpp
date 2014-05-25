@@ -45,51 +45,94 @@ typedef std::map<int,int>::reverse_iterator scMapiiRevIter;
 	for (int x=start;x<num;x++)
 
 int m,n;
+#define GETX(num) \
+	((num)%m)
+#define GETY(num) \
+	((num)/m)
+#define GETNUM(y,x) \
+	((y)*m+(x))
+const int INF=0x7fffffff;
 class PalindromeMatrixDiv2
         { 
         public: 
-			int c[9][9];
-			int vis[9][9];
+			int c[65][65];
+			int vis[65];
         int minChange(vector <string> A, int rowCount, int columnCount) 
             { 
 				n=A.size();
 				m=A[0].size();
-				scVeci rv(n);
-				scVeci cv(n);
-				scFor0(i,n){
-					rv[i]=i;
-				}
-				scFor0(i,n){
-					cv[i]=i;
-				}
+				scVeci rv(n,0);
+				scVeci cv(m,0);
 				int rc=rowCount;
 				int cc=columnCount;
-				
+				scFor0(i,rc){
+					rv[n-1-i]=1;
+				}
+				scFor0(i,cc){
+					cv[m-1-i]=1;
+				}
+				int res=INF;
 				do{
 					do{
-						vector <scPair2i> nodes;
 						memset(c,0,sizeof(c));
-						memset(vis,0,sizeof(vis));
-						scFor0(i,rc){
-							scFor0(j,m/2){
-								int u=rv[i]*m+j;
-								int v=rv[i]*m+m-1-j;
-								c[u][v]=1;
-								c[v][u]=1;
+						memset(vis,-1,sizeof(vis));
+						scFor0(i,n){
+							if (rv[i]){
+								scFor0(j,m/2){
+									int u=GETNUM(i,j);
+									int v=GETNUM(i,m-1-j);
+									c[u][v]=1;
+									c[v][u]=1;
+									vis[u]=0;
+									vis[v]=0;
+								}
 							}
 						}
-						scFor0(i,cc){
-							scFor0(j,n/2){
-								int u=j*m+cv[i];
-								int v=(n-1-j)*m+cv[i];
-								c[u][v]=1;
-								c[v][u]=1;
+						scFor0(i,m){
+							if (cv[i]){
+								scFor0(j,n/2){
+									int u=GETNUM(j	  ,i);
+									int v=GETNUM(n-1-j,i);
+									c[u][v]=1;
+									c[v][u]=1;
+									vis[u]=0;
+									vis[v]=0;
+								}
 							}
 						}
-
-
+						int change=0;
+						scFor0(i,m*n){
+							if (vis[i]==0){
+								//dfs a scc
+								scStacki st;
+								st.push(i);
+								vis[i]=1;
+								int a=0;
+								int b=0;
+								while(!st.empty()){
+									int u=st.top();
+									st.pop();
+									if (A[GETY(u)][GETX(u)]=='1'){
+										a++;
+									}
+									else{
+										b++;
+									}
+									vis[u]=2;
+									scFor0(v,m*n){
+										if (c[u][v] && vis[v]==0){
+											st.push(v);
+											vis[v]=1;
+										}
+									}
+								}
+								change+=min(a,b);
+							}
+						}
+						res=min(res,change);
 					}while(next_permutation(cv.begin(),cv.end()));
 				}while(next_permutation(rv.begin(),rv.end()));
+				return res;
             } 
         
 // BEGIN CUT HERE
