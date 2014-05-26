@@ -54,11 +54,13 @@ class SimilarNames2
 			vector <scVeci> og=G;
 			scFor0(i,n)	scFor0(j,n){
 				G[i][j]=0;
-				scFor0(p,n) scFor0(q,n){
-					G[i][j]+=og[i][p]*c[q][j];
+				scFor0(p,n){
+					G[i][j]+=og[i][p]*c[p][j]%MODNUM;
+					G[i][j]%=MODNUM;
 				}
 			}
 		}
+		
         int count(vector <string> names, int L) 
             { 
 				n=names.size();
@@ -71,11 +73,17 @@ class SimilarNames2
 					c[i][i]=0;
 					G[i][i]=1;
 					scFor1(j,i+1,n){
-						if (names[j].find(names[i])!=string::npos){
-							c[i][j]=1;
+						string sni=names[i];
+						string snj=names[j];
+						if (snj.length()>sni.length()){
+							if (snj.substr(0,sni.length())==sni){
+								c[i][j]=1;
+							}
 						}
-						if (names[i].find(names[j])!=string::npos){
-							c[j][i]=1;
+						if (sni.length()>snj.length()){
+							if (sni.substr(0,snj.length())==snj){
+								c[j][i]=1;
+							}
 						}
 					}
 				}
@@ -86,8 +94,8 @@ class SimilarNames2
 					MatMul();
 				}
 				scLLi lPerm=1;
-				scFor1(i,1,n-L){
-					lPerm*=i;
+				scFor1(i,0,n-L){
+					lPerm*=i+1;
 					lPerm%=MODNUM;
 				}
 				scLLi res=0;
