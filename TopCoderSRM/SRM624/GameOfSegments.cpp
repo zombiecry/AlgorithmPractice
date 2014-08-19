@@ -24,14 +24,43 @@
 #include <cstring>
 using namespace std;
 
+const int MAX_N = 1001;
 
 int m,n;
+
+
+
 class GameOfSegments
         { 
         public: 
+			int mem[MAX_N];
+		int Solve(int num){
+			if (mem[num]!=-1){return mem[num];}
+			if (num<2){
+				mem[num]=0;
+				return mem[num];
+			}
+			set <int> s;
+			for (int i=0;i<((num-2)/2+1);i++){
+				int g1=Solve(i);
+				int g2=Solve(num-2-i);
+				s.insert(g1 ^ g2);
+			}
+			int res=0;
+			while(s.count(res)){res++;}
+			mem[num]=res;
+			return res;
+		}
         int winner(int N) 
             { 
-            //$CARETPOSITION$ 
+				n=n;
+				memset(mem,-1,sizeof(mem));
+				if (Solve(N)){
+					return 1;
+				}
+				else{
+					return 2;
+				}
             } 
         
 // BEGIN CUT HERE
