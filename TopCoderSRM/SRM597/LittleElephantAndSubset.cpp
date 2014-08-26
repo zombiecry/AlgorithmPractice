@@ -24,42 +24,12 @@
 #include <cstring>
 using namespace std;
 
-#define SCREL 0
+const long long MODULAR = 1000000007 ;
 int m,n;
 class LittleElephantAndSubset
         { 
         public: 
-			vector <int> a;
-			int    pre[1<<11];
-			int Summary(vector <int> &c,int end){
-				int res=0;
-				for (int i=0;i<=end;i++){
-					res+=c[i];
-				}
-				return res;
-			}
-			int Calc(vector <int> &c){
-				int res=1;
-				int start=0;
-				for (int i=0;i<c.size();i++){
-					int num=0;
-					for (int j=0;j<c[i];j++){
-						num |= 1<<j;
-					}
-					num=num << start;
-#if SCREL
-#define GETPRE(x)	\
-	pre[(x)]
-#else
-#define GETPRE(x)	\
-	(((x) & 1) ==1) ? 1 : CalcPre((x)>>1)
-#endif
-					res*=GETPRE(num);
-					if (res==0){break;}
-					start+=c[i];
-				}
-				return res;
-			}
+			int    pre[1<<11];	
 			int CalcPre(int A){
 				vector <int> s;
 				for (int i=0;i<10;i++){
@@ -67,7 +37,7 @@ class LittleElephantAndSubset
 						s.push_back(i);
 					}
 				}
-				int res=0;
+				long long res=0;
 				do{
 					if (s[0]==0){continue;}
 					long long dig=1;
@@ -81,6 +51,7 @@ class LittleElephantAndSubset
 					}
 					if (num <= n){
 						res++;
+						res %= MODULAR;
 					}
 					else{
 						break;
@@ -88,56 +59,66 @@ class LittleElephantAndSubset
 				}while(next_permutation(s.begin(),s.end()));
 				return res;
 			}
+		int Calc (int par[]){
+			long long res=1;
+			for (int i=0;i<11;i++){
+				if (par[i]){
+					int num=par[i] << i;
+					res *= pre[num];
+					res %= MODULAR;
+					if (res ==0){
+						break;
+					}
+				}
+			}
+			return res;
+		}
+		int par[11];
+		int Solve(int a,int p){
+			if (p<10){
+				long long res=0;
+				if ((a >> p) & 1){
+					par[p]=0;
+					res = Solve(a, p+1);
+				}
+				else{
+					for (int i=0;i < (1 << (10-p)) ; i++){
+						int a1 = a >> (p+1);
+						if ((a1 & i) == 0){
+							int a2 = a | (i << (p+1));
+							a2 |= 1<<p;
+							par[p] = (i << 1) | 1;
+							res += Solve(a2 , p+1);
+							res %= MODULAR;
+						}
+					}
+				}
+				return res;
+			}
+			else {
+				if ((a >> p) & 1 ){
+					par[p]=0;
+				}
+				else{
+					par[p]=1;
+				}
+				int res=Calc(par);
+				return res;
+			}
+		}
         int getNumber(int N) 
             { 
 				n=N;
 				//pre calc 
-#if SCREL
-				for (int i=1;i < 1<<11 ;i++){
+				for (int i=1;i < 1 << 11 ;i++){
 					if ((i & 1) ==1 ){
 						pre[i]=1;
 						continue;
 					}
 					pre[i]=CalcPre(i>>1);
 				}
-#endif
-				a.resize(11);
-				for (int i=0;i<11;i++){
-					a[i]=i-1;
-				}
-				a[0]=10;
-				int res=0;
-				for (int i=2;i<=11;i++){
-					int j=0;	
-					static int lastRes=0;
-					vector <int> c(i,0);	//backtrack
-					while (j>=0){
-						c[j]++;
-						int sum=Summary(c,j);
-						if (sum < 11){
-							if (j < i-2){
-								j++;
-							}
-							else{			//j=i-2
-								c[j+1]=11-sum;
-								int temp=Calc(c);
-								//res+=Calc(c);
-								res+=temp;
-								for (int i=0;i<c.size();i++){
-									cout<<c[i]<<" , ";
-								}
-								cout<<endl;
-								cout<<temp<<endl;
-							}
-						}
-						else{
-							c[j]=0;
-							j--;
-						}
-					}
-				}
-				return res;
-            } 
+				return Solve(0,0)-1;
+		} 
         
 // BEGIN CUT HERE
 	public:
@@ -158,7 +139,7 @@ class LittleElephantAndSubset
     int main()
         {
         LittleElephantAndSubset ___test; 
-        ___test.run_test(0); 
+        ___test.run_test(-1); 
         system("pause");
         } 
     // END CUT HERE 
