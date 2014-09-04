@@ -26,13 +26,52 @@ using namespace std;
 
 
 int m,n;
+typedef pair <string,int> scPair;
 class SuffixArrayDiv2
         { 
         public: 
-        string smallerOne(string s) 
-            { 
-            //$CARETPOSITION$ 
-            } 
+			//suffix rank array
+			vector <int> A;
+			//B[i] means the rank in A of the suffix from index i
+			//which is an reverse of A's index-value
+			vector <int> B;
+			string smallerOne(string s) {
+				n=s.length();
+				//use set for sorting suffix index based suffix
+				set <scPair> surf; 
+				for (int i=0;i<n;i++){
+					surf.insert(scPair(s.substr(i),i));
+				}
+				set<scPair> ::iterator it=surf.begin();
+				A.resize(n);
+				B.resize(n+1);
+				int count=0;
+				for (;it!=surf.end();it++){
+					A[count]=it->second;
+					B[it->second]=count;
+					count++;
+				}
+				//--------------------------------
+				//since B[ai+1] would exceed n, assum the empty suffix be a smallest one
+				B[n]=-1;		
+				string res;
+				res.resize(n);
+				char cur='a';
+				res[A[0]]=cur;
+				//the least possible string
+				for (int i=1;i<n;i++){
+					if (B[A[i-1]+1] >= B[A[i]+1]){
+						cur++;
+					}
+					res[A[i]]=cur;
+				}
+				if (res < s){
+					return "Exists";
+				}
+				else{
+					return "Does not exist";
+				}
+			}
         
 // BEGIN CUT HERE
 	public:
