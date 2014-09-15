@@ -29,9 +29,52 @@ int m,n;
 class FlippingBitsDiv2
         { 
         public: 
+			vector <int> A;
+			vector <int> c[2];
+			int dp[2501][2][2];
+			int Solve(int t,int p,int q){
+				if (dp[t][p][q]!=-1){return dp[t][p][q];}
+				if (t==0){	
+					if (p==1 && q==1){		//non-flip at all(q==1) and infact previous choice is 1
+						return 1;
+					}
+					return 0;
+				}
+				int res=numeric_limits<int>::max();
+				//0: flip cur group verse vice
+				for (int i=0;i<2;i++){
+					int change=q;		//has a change happened?
+					int curChange=0;	//if current change from previous
+					if (t!=m){
+						curChange=i^p;
+						if (change==1){
+							change=!(p ^ i);
+						}
+					}
+					res=min(res,curChange+c[i][t-1]+Solve(t-1,i,change));
+				}
+				dp[t][p][q]=res;
+				return res;
+			}
         int getmin(vector <string> S, int M) 
             { 
-            //$CARETPOSITION$ 
+				memset(dp,-1,sizeof(dp));
+				//devide S into |S|/M groups
+				for (int i=0;i<S.size();i++) for (int j=0;j<S[i].length();j++){
+					A.push_back(S[i][j]-'0');
+				}
+				n=A.size();
+				m=n/M;
+				c[0].resize(m,0);
+				c[1].resize(m,0);
+				//statistic the op of flipping or non-flipping bits of every group.
+				for (int i=0;i<m;i++) for (int j=0;j<M;j++){
+					int p=i*M+j;
+					if (A[p]==0){c[0][i]++;}
+					else if (A[p]==1){c[1][i]++;}
+				}
+				//first m groups, last choice is 0, allflip flag is 1
+				return Solve(m,0,1);
             } 
         
 // BEGIN CUT HERE
