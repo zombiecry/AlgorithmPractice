@@ -23,55 +23,36 @@
 #include <ctime>
 #include <cstring>
 using namespace std;
-typedef map<int,int> scMap;
-#define tr(it,cont)		\
-	for ( it=cont.begin();it!=cont.end();it++)
-int m,n;
+typedef pair<int,int> scPair;
 const int MODULAR=1000000007;
+int m,n;
+
 class GoodSubset
         { 
         public: 
-			int g;
 			vector <int> d;
-			map <int,int> c;
-			vector <string> dm;
+			map <scPair,int> cm;
 			int Solve(int p,int x){
-
-			}
-			void pf(int x){
-				for (int i=2;i*i<=x;i++){
-					while (x%i==0){
-						++c[i];
-						x/=i;
-					}
+				if (p==0){return (x==1);}
+				if (cm.find(scPair(p,x))!=cm.end()){return cm[scPair(p,x)];}
+				int res=0;
+				if (x % d[p-1]==0){
+					res+=Solve(p-1,x/d[p-1]);
 				}
-				if (x!=1){c[x]=1;}
+				res+=Solve(p-1,x);
+				res%=MODULAR;
+				cm[scPair(p,x)]=res;
+				return res;
 			}
-
         int numberOfSubsets(int goodValue, vector <int> d) 
             { 
-				this->g=goodValue;
+				this->d=d;
 				n=d.size();
-				for (int i=0;i<n;i++){
-					if (g % d[i]==0){
-						this->d.push_back(d[i]);
-					}
+				cm.clear();
+				if (goodValue ==1){
+					return Solve(n,goodValue)-1;
 				}
-				n=this->d.size();
-
-				pf(g);
-				dm.resize(n);
-				for (int i=0;i<n;i++){
-					scMap::iterator it;
-					dm[i].resize(c.size());
-					tr(it,c){
-						if (d[i]%it->first ==0){
-							
-						}
-					}
-				}
-
-				return Solve(n-1,g);
+				return Solve(n,goodValue);
             } 
         
 // BEGIN CUT HERE
