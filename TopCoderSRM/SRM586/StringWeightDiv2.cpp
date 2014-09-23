@@ -31,6 +31,8 @@ class StringWeightDiv2
         { 
         public: 
 			int comb[27][27];
+			int dp[1001][27];
+			//clac the combination use C(a,b)=C(a-1,b-1)+C(a-1,b)
 			int CalcC(int n,int m){
 				if (n==0 && m==0){return 1;}
 				if (n==0){return 0;}
@@ -41,24 +43,40 @@ class StringWeightDiv2
 				comb[n][m]=res;
 				return res;
 			}
+			//how many ways for [0,p] with l charectors unused
+			int Solve(int p,int l){
+				if (p==-1){return l==0;}
+				if (dp[p][l]!=-1){return dp[p][l];}
+				long long res=0;
+				if (l>0){	//begin a new consecutive seria
+					res+=(long long)Solve(p-1,l-1)*CalcC(l,1);
+					res%=MODULAR;
+				}
+				if (l<26){	//continue with last charactor
+					res+=Solve(p-1,l);
+					res%=MODULAR;
+				}
+				dp[p][l]=(int)res;
+				return (int)res;
+			}
         int countMinimums(int L) 
             { 
 				memset(comb,-1,sizeof(comb));
-				if (L<=26){
+				if (L<=26){		//just select unique charactors in the permutation
 					long long res=1;
 					for (int i=0;i<L;i++){
 						res*=CalcC(26-i,1);
 						res%=MODULAR;
 					}
-					return (int)res;
+					return res;
 				}
-				
-				long long res=CalcC(26,L%26);
-				for (int i=2;i<=26;i++){
-					res *=i;
-					res%=MODULAR;
+				else{
+					//when L>26, the string should meet:
+					//1)use all the 26 characters
+					//2)for one specify character, its appearance must be consecutive.
+					memset(dp,-1,sizeof(dp));
+					return Solve(L-1,26);
 				}
-				return (int)res;
             } 
         
 // BEGIN CUT HERE
@@ -79,7 +97,7 @@ class StringWeightDiv2
     int main()
         {
         StringWeightDiv2 ___test; 
-        ___test.run_test(2); 
+        ___test.run_test(-1); 
         system("pause");
         } 
     // END CUT HERE 
