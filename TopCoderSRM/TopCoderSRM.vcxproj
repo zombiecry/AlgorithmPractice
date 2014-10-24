@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="SimilarRatingGraph.cpp" />
+    <ClCompile Include="PeriodicJumping.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{18A6B773-7C3E-4EE0-B789-B0FA32829C1D}</ProjectGuid>
