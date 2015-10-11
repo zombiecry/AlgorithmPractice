@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TopCoderSRM", "TopCoderSRM\TopCoderSRM.vcxproj", "{18A6B773-7C3E-4EE0-B789-B0FA32829C1D}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LeetCode", "LeetCode\LeetCode.vcxproj", "{3D725728-7447-4D31-8E6C-6DDE93ED05F2}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -19,12 +17,6 @@ Global
 		{18A6B773-7C3E-4EE0-B789-B0FA32829C1D}.Release|Win32.ActiveCfg = Release|Win32
 		{18A6B773-7C3E-4EE0-B789-B0FA32829C1D}.Release|Win32.Build.0 = Release|Win32
 		{18A6B773-7C3E-4EE0-B789-B0FA32829C1D}.Release|x64.ActiveCfg = Release|Win32
-		{3D725728-7447-4D31-8E6C-6DDE93ED05F2}.Debug|Win32.ActiveCfg = Debug|Win32
-		{3D725728-7447-4D31-8E6C-6DDE93ED05F2}.Debug|Win32.Build.0 = Debug|Win32
-		{3D725728-7447-4D31-8E6C-6DDE93ED05F2}.Debug|x64.ActiveCfg = Debug|Win32
-		{3D725728-7447-4D31-8E6C-6DDE93ED05F2}.Release|Win32.ActiveCfg = Release|Win32
-		{3D725728-7447-4D31-8E6C-6DDE93ED05F2}.Release|Win32.Build.0 = Release|Win32
-		{3D725728-7447-4D31-8E6C-6DDE93ED05F2}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
